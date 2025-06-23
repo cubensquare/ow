@@ -11,7 +11,7 @@ set -euo pipefail
 ### === 0. EDIT THESE VARIABLES ===================================
 # OpenShift & RHCOS version (must match)
 OCP_VERSION="4.14.20"             # installer & client
-RHCOS_VERSION="4.14.20"           # ISO & rootfs (same major/minor)
+RHCOS_VERSION="4.14.15"           # ISO & rootfs (same major/minor)
 
 # Cluster basics
 BASE_DOMAIN="lab.example"         # e.g. lab.example
