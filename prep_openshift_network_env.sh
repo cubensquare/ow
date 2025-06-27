@@ -5,10 +5,10 @@ set -e
 # === CONFIGURATION ===
 NET_NAME="openshift"
 BRIDGE_NAME="virbr1"
-NET_XML="/tmp/virt-net.xml"
+NET_XML="/root/ocp/download/virt-net.xml"
 HOST_ENTRIES_FILE="/etc/hosts"
 OCP_DIR="/root/ocp"
-RHCOS_ISO_PATTERN="rhcos-4.16.3-x86_64-live.iso"
+RHCOS_ISO_PATTERN="/root/ocp/download/rhcos-4.16.3-x86_64-live.iso"
 INSTALLER_BIN="/usr/local/bin/openshift-install"
 PULL_SECRET_PATH="/root/pull-secret.json"
 SSH_KEY_PATH="$HOME/.ssh/id_rsa.pub"
