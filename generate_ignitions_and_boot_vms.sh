@@ -3,8 +3,8 @@
 set -e
 
 # === CONFIGURATION ===
-OCP_DIR="/root/ocp"
-RHCOS_ISO="$OCP_DIR/rhcos-4.16.3-x86_64-live.iso"
+OCP_DIR="/root/ocp/"
+RHCOS_ISO="/root/ocp/download/rhcos-4.16.3-x86_64-live.iso"
 INSTALLER_BIN="/usr/local/bin/openshift-install"
 LOG_DIR="$OCP_DIR/logs"
 mkdir -p "$LOG_DIR"
