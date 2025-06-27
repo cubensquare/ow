@@ -53,9 +53,9 @@ for ign in bootstrap.ign master.ign worker.ign; do
   fi
 done
 
-echo "🌐 Curl test from host to local Apache server (http://192.168.126.1/IGN)..."
+echo "🌐 Curl test from host to local Apache server (http://192.168.0.11/IGN)..."
 for ign in bootstrap.ign master.ign worker.ign; do
-  curl -s --head http://192.168.126.1/$ign | head -n 1 | grep "200 OK" > /dev/null
+  curl -s --head http://192.168.0.11/$ign | head -n 1 | grep "200 OK" > /dev/null
   if [ $? -eq 0 ]; then
     echo "✅ $ign accessible"
   else
