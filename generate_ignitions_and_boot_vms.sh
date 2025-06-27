@@ -3,7 +3,7 @@
 set -e
 
 # === CONFIGURATION ===
-OCP_DIR="/root/ocp/"
+OCP_DIR="/root/ocp"
 RHCOS_ISO="$OCP_DIR/rhcos-4.16.3-x86_64-live.iso"
 INSTALLER_BIN="/usr/local/bin/openshift-install"
 LOG_DIR="$OCP_DIR/logs"
@@ -16,6 +16,26 @@ declare -A VM_CONFIGS=(
   [worker1]="52:54:00:45:8a:73 192.168.126.147"
 )
 
+# Map VM names to correct embedded ISO names
+declare -A ISO_MAP=(
+  [bootstrap]="rhcos-bootstrap.iso"
+  [master0]="rhcos-master.iso"
+  [worker1]="rhcos-worker.iso"
+)
+
+# VM specs
+declare -A MEMORY=(
+  [bootstrap]=16384
+  [master0]=16384
+  [worker1]=8192
+)
+
+declare -A VCPUS=(
+  [bootstrap]=4
+  [master0]=4
+  [worker1]=4
+)
+
 # === STEP 1: Validate RHCOS ISO ===
 echo "🔍 Validating RHCOS ISO..."
 if [ ! -f "$RHCOS_ISO" ]; then
@@ -23,7 +43,6 @@ if [ ! -f "$RHCOS_ISO" ]; then
   exit 1
 fi
 
-# Basic ISO file validation
 file "$RHCOS_ISO"
 if ! file "$RHCOS_ISO" | grep -q "ISO 9660"; then
   echo "❌ ISO format invalid. Please re-download."
@@ -51,15 +70,10 @@ done
 # === STEP 4: Create and boot VMs ===
 echo "🚀 Launching VMs..."
 
-declare -A MEMORY=( ["bootstrap"]=16384 ["master0"]=16384 ["worker1"]=8192 )
-declare -A VCPUS=( ["bootstrap"]=4 ["master0"]=4 ["worker1"]=4 )
-
 for vm in "${!VM_CONFIGS[@]}"; do
   MAC="${VM_CONFIGS[$vm]%% *}"
   IP="${VM_CONFIGS[$vm]##* }"
-  ROLE_TYPE="${vm/bootstrap/bootstrap}"
-  ROLE_TYPE="${ROLE_TYPE/master/master}"
-  ROLE_TYPE="${ROLE_TYPE/worker/worker}"
+  ISO_FILE="${ISO_MAP[$vm]}"
 
   echo "🖥️ Creating VM: $vm (MAC: $MAC, IP: $IP)"
   virt-install \
@@ -71,7 +85,7 @@ for vm in "${!VM_CONFIGS[@]}"; do
     --network network=openshift,model=virtio,mac="$MAC" \
     --graphics none \
     --console pty,target_type=serial \
-    --cdrom "$OCP_DIR/rhcos-${ROLE_TYPE}.iso" \
+    --cdrom "$OCP_DIR/${ISO_FILE}" \
     --noautoconsole \
     --check path_in_use=off \
     | tee "$LOG_DIR/virt-install-${vm}.log"
